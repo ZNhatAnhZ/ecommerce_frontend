@@ -6,6 +6,8 @@ import Container from 'react-bootstrap/esm/Container'
 import Row from 'react-bootstrap/esm/Row'
 import Col from 'react-bootstrap/esm/Col'
 import ProductMainInfo from '../components/ProductDetail/ProductMainInfo/ProductMainInfo'
+import ProductOption from '../components/ProductDetail/ProductOption/ProductOption'
+import PurchasingArea from '../components/ProductDetail/PurchasingArea/PurchasingArea'
 
 function ProductDetail() {
     return (
@@ -17,7 +19,15 @@ function ProductDetail() {
                         <ProductImageContainer></ProductImageContainer>
                     </Col>
                     <Col className='col-5 p-0'>
-                        <ProductMainInfo></ProductMainInfo>
+                        <Row>
+                            <ProductMainInfo></ProductMainInfo>
+                        </Row>
+                        <Row>
+                            <ProductOption></ProductOption>
+                        </Row>
+                        <Row>
+                            <PurchasingArea></PurchasingArea>
+                        </Row>
                     </Col>
                 </Row>
             </Container>
