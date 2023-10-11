@@ -12,6 +12,7 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import ProductIndex from './pages/ProductIndex.jsx';
 import ProductDetail from './pages/ProductDetail.jsx';
+import CartIndex from './pages/CartIndex.jsx';
 
 
 const router = createBrowserRouter([
@@ -27,6 +28,11 @@ const router = createBrowserRouter([
   {
     path: "/products/:id",
     element: <ProductDetail></ProductDetail>,
+  },
+  ,
+  {
+    path: "/carts",
+    element: <CartIndex></CartIndex>,
   },
 ]);
 

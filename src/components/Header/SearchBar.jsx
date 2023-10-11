@@ -6,9 +6,9 @@ import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 
 function SearchBar() {
     return (
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col col-lg-8">
+        <div className="container">
+            <div className="row justify-content-center">
+                <div className="col col-lg-8">
                     <InputGroup size="lg">
                         <InputGroup.Text id="basic-addon1" className='bg-white'>
                             <FontAwesomeIcon icon={faMagnifyingGlass} style={{ color: "#143a7b", }} />

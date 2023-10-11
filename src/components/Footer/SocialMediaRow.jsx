@@ -45,7 +45,7 @@ function SocialMediaRow() {
                         </Nav>
                     </Col>
                     <Col className='col-1 d-flex justify-content-center'>
-                        <div class="vr"></div>
+                        <div className="vr"></div>
                     </Col>
                     <Col className='col-5'>
                         <Nav className="m-auto justify-content-around">

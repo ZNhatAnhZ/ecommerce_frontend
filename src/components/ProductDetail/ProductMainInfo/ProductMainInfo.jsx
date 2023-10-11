@@ -10,8 +10,8 @@ function ProductMainInfo() {
         <div>
             <p className="fs-4">Gifts For Sisters - Love Tree - I'd Walk Through Fire For You Sister...(Custom Mugs - Christmas Gifts, Birthday Gift For Sister) - Personalized Mug</p>
             <div>
-                <span class="text-decoration-line-through fs-5 text-secondary">$24.99 USD</span>
-                <span class="fw-bold fs-4 text-danger ps-2">$24.99 USD</span>
+                <span className="text-decoration-line-through fs-5 text-secondary">$24.99 USD</span>
+                <span className="fw-bold fs-4 text-danger ps-2">$24.99 USD</span>
             </div>
             <div>
                 <p className='fs-6 fw-bold mt-2 mb-5'>HURRY UP! OFFER END IN:</p>
