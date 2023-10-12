@@ -37,7 +37,7 @@ function ProductDisplayArea() {
             <Container className='border rounded m-0'>
                 <Row>
                     <Col>
-                        <div className='position-relative'>
+                        <div className='position-relative d-inline-block'>
                             <Image>
                             </Image>
                             <Badge className="px-3 position-absolute shadow translate-middle badge rounded-pill bg-white text-dark fs-6 fw-normal" style={{
@@ -49,7 +49,7 @@ function ProductDisplayArea() {
                         </div>
                     </Col>
                     <Col>
-                        <div className='position-relative'>
+                        <div className='position-relative d-inline-block'>
                             <Image>
                             </Image>
                             <Badge className="px-3 position-absolute shadow translate-middle badge rounded-pill bg-white text-dark fs-6 fw-normal" style={{
@@ -107,10 +107,10 @@ function ProductDisplayArea() {
                     <hr class="border-secondary" />
                     <Row className='d-flex justify-content-start mb-3'>
                         <Col className='col-2'>
-                            <div>Edit Item</div>
+                            <div className='text-decoration-underline'>Edit Item</div>
                         </Col>
                         <Col className='col-1'>
-                            <div>Remove</div>
+                            <div className='text-decoration-underline'>Remove</div>
                         </Col>
                     </Row>
                 </Row>

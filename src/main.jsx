@@ -13,6 +13,7 @@ import '@fontsource/roboto/700.css';
 import ProductIndex from './pages/ProductIndex.jsx';
 import ProductDetail from './pages/ProductDetail.jsx';
 import CartIndex from './pages/CartIndex.jsx';
+import Checkout from './pages/Checkout.jsx';
 
 
 const router = createBrowserRouter([
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
   {
     path: "/carts",
     element: <CartIndex></CartIndex>,
+  },
+  {
+    path: "/checkout",
+    element: <Checkout></Checkout>,
   },
 ]);
 
