@@ -14,7 +14,10 @@ import ProductIndex from './pages/ProductIndex.jsx';
 import ProductDetail from './pages/ProductDetail.jsx';
 import CartIndex from './pages/CartIndex.jsx';
 import Checkout from './pages/Checkout.jsx';
+import axios from 'axios';
+import { getAllProducts, getAProduct } from './services/productService.jsx';
 
+axios.defaults.baseURL = "http://localhost:8080";
 
 const router = createBrowserRouter([
   {
@@ -24,11 +27,13 @@ const router = createBrowserRouter([
   {
     path: "/products",
     element: <ProductIndex></ProductIndex>,
+    loader: async () => { return await getAllProducts(); }
   },
   ,
   {
     path: "/products/:id",
     element: <ProductDetail></ProductDetail>,
+    loader: async ({ params }) => { return await getAProduct(params.id) }
   },
   ,
   {

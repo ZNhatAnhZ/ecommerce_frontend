@@ -1,14 +1,16 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Col from 'react-bootstrap/esm/Col'
 import Container from 'react-bootstrap/esm/Container'
 import Row from 'react-bootstrap/esm/Row'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTruck, faBox } from '@fortawesome/free-solid-svg-icons'
 
-function ProductMainInfo() {
+function ProductMainInfo(props) {
+    let [product, setProduct] = useState(props.product);
+
     return (
         <div>
-            <p className="fs-4">Gifts For Sisters - Love Tree - I'd Walk Through Fire For You Sister...(Custom Mugs - Christmas Gifts, Birthday Gift For Sister) - Personalized Mug</p>
+            <p className="fs-4">{product.name}</p>
             <div>
                 <span className="text-decoration-line-through fs-5 text-secondary">$24.99 USD</span>
                 <span className="fw-bold fs-4 text-danger ps-2">$24.99 USD</span>

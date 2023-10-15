@@ -19,7 +19,7 @@ function SideThumbnail() {
             <Tabs
                 orientation="vertical"
                 variant="scrollable"
-                scrollButtons="false"
+                scrollButtons={false}
                 aria-label="Vertical tabs example"
             >
                 <Tab sx={{ padding: 0, border: 1, borderColor: "rgb(220 215 215)", borderRadius: "1em", marginBottom: "0.5em" }} icon={<Image />} />
@@ -28,7 +28,7 @@ function SideThumbnail() {
                 <Tab sx={{ padding: 0, border: 1, borderColor: "rgb(220 215 215)", borderRadius: "1em", marginBottom: "0.5em" }} icon={<Image />} />
                 <Tab sx={{ padding: 0, border: 1, borderColor: "rgb(220 215 215)", borderRadius: "1em", marginBottom: "0.5em" }} icon={<Image />} />
             </Tabs>
-        </Box>
+        </Box >
     )
 }
 

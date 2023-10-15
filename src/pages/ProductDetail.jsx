@@ -8,8 +8,11 @@ import Col from 'react-bootstrap/esm/Col'
 import ProductMainInfo from '../components/ProductDetail/ProductMainInfo/ProductMainInfo'
 import ProductOption from '../components/ProductDetail/ProductOption/ProductOption'
 import PurchasingArea from '../components/ProductDetail/PurchasingArea/PurchasingArea'
+import { useLoaderData } from 'react-router-dom';
 
 function ProductDetail() {
+    const product = useLoaderData();
+
     return (
         <div>
             <Header></Header>
@@ -20,10 +23,10 @@ function ProductDetail() {
                     </Col>
                     <Col className='col-5 p-0'>
                         <Row>
-                            <ProductMainInfo></ProductMainInfo>
+                            <ProductMainInfo product={product}></ProductMainInfo>
                         </Row>
                         <Row>
-                            <ProductOption></ProductOption>
+                            <ProductOption product={product}></ProductOption>
                         </Row>
                         <Row>
                             <PurchasingArea></PurchasingArea>
