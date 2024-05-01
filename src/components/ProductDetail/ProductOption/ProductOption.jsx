@@ -4,35 +4,49 @@ import Form from 'react-bootstrap/Form';
 function ProductOptionChildren(variationEntityList, arrayOfSelectedOptionFromParent, setArrayOfSelectedOptionFromParent) {
     if (variationEntityList == null || variationEntityList.length == 0) return;
 
-    let [currentVariationEntity, setCurrentVariationEntity] = useState(variationEntityList[0]);
+    let reducedVariationEntityList = [];
+    variationEntityList.sort((a, b) => a.name.localeCompare(b.name)).forEach(element => {
+        if (reducedVariationEntityList.length != 0 && reducedVariationEntityList[reducedVariationEntityList.length - 1][0].name == element.name) {
+            reducedVariationEntityList[reducedVariationEntityList.length - 1].push(element);
+        } else {
+            reducedVariationEntityList.push([element]);
+        }
+    });
+    let [currentVariationEntity, setCurrentVariationEntity] = useState(reducedVariationEntityList[0][0]);
     let isShown = arrayOfSelectedOptionFromParent.includes(currentVariationEntity);
     useEffect(() => {
         isShown = arrayOfSelectedOptionFromParent.includes(currentVariationEntity);
         if (isShown == false) {
             //reset selected options to prevent wrong displaying option
-            isShown = arrayOfSelectedOptionFromParent.includes(variationEntityList[0]);
-            setCurrentVariationEntity(variationEntityList[0]);
+            isShown = arrayOfSelectedOptionFromParent.includes(reducedVariationEntityList[0][0]);
+            setCurrentVariationEntity(reducedVariationEntityList[0][0]);
         }
     }, [arrayOfSelectedOptionFromParent, currentVariationEntity]);
 
+    console.log(reducedVariationEntityList);
+
     return (
-        <div key={variationEntityList[0].name}>
-            {isShown ? (<div className="mb-2">
-                <p className='fs-6 fw-bold mb-1'>{variationEntityList[0].name}</p>
-                <Form.Select size="sm" className='bg-secondary bg-opacity-10' onChange={(event) => {
-                    const newSelectedVariation = variationEntityList.find((variationEntity) => variationEntity.id == event.target.value);
-                    const oldSelectedVariation = currentVariationEntity;
-                    setArrayOfSelectedOptionFromParent(removeDependentVariationEntity(addDependentVariationEntity(arrayOfSelectedOptionFromParent, newSelectedVariation), oldSelectedVariation));
-                    setCurrentVariationEntity(newSelectedVariation);
-                }}>
-                    <option key={variationEntityList[0].id} value={variationEntityList[0].id}>{variationEntityList[0].value}</option>
-                    {variationEntityList.map((variationEntity => {
-                        if (variationEntity !== variationEntityList[0]) {
-                            return <option key={variationEntity.id} value={variationEntity.id}>{variationEntity.value}</option>
-                        }
-                    }))}
-                </Form.Select>
-            </div>) : null}
+        // this key is wrong
+        <div>
+            {isShown ? reducedVariationEntityList.map(arrayOfVariations => {
+                <div className="mb-2">
+                    <p className='fs-6 fw-bold mb-1'>{arrayOfVariations[0].name}</p>
+                    <Form.Select size="sm" className='bg-secondary bg-opacity-10' onChange={(event) => {
+                        const newSelectedVariation = arrayOfVariations.find((variationEntity) => variationEntity.id == event.target.value);
+                        const oldSelectedVariation = currentVariationEntity;
+
+                        setArrayOfSelectedOptionFromParent(removeDependentVariationEntity(addDependentVariationEntity(arrayOfSelectedOptionFromParent, newSelectedVariation), oldSelectedVariation));
+                        setCurrentVariationEntity(newSelectedVariation);
+                    }}>
+                        <option key={arrayOfVariations[0].id} value={arrayOfVariations[0].id}>{arrayOfVariations[0].value}</option>
+                        {arrayOfVariations.map((variationEntity => {
+                            if (variationEntity !== arrayOfVariations[0]) {
+                                return <option key={variationEntity.id} value={variationEntity.id}>{variationEntity.value}</option>
+                            }
+                        }))}
+                    </Form.Select>
+                </div>
+            }) : null}
             {variationEntityList.map((variationEntity => {
                 return ProductOptionChildren(variationEntity.childVariationEntityIndexDtoList, arrayOfSelectedOptionFromParent, setArrayOfSelectedOptionFromParent);
             }))}

@@ -27,13 +27,13 @@ const router = createBrowserRouter([
   {
     path: "/products",
     element: <ProductIndex></ProductIndex>,
-    loader: async () => { return await getAllProducts(); }
+    loader: () => { return getAllProducts(); }
   },
   ,
   {
     path: "/products/:id",
     element: <ProductDetail></ProductDetail>,
-    loader: async ({ params }) => { return await getAProduct(params.id) }
+    loader: ({ params }) => { return getAProduct(params.id) }
   },
   ,
   {
