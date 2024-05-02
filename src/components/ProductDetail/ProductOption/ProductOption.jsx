@@ -1,93 +1,64 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Form from 'react-bootstrap/Form';
 
-function ProductOptionChildren(variationEntityList, arrayOfSelectedOptionFromParent, setArrayOfSelectedOptionFromParent) {
-    if (variationEntityList == null || variationEntityList.length == 0) return;
-
-    let reducedVariationEntityList = [];
-    variationEntityList.sort((a, b) => a.name.localeCompare(b.name)).forEach(element => {
-        if (reducedVariationEntityList.length != 0 && reducedVariationEntityList[reducedVariationEntityList.length - 1][0].name == element.name) {
-            reducedVariationEntityList[reducedVariationEntityList.length - 1].push(element);
-        } else {
-            reducedVariationEntityList.push([element]);
-        }
-    });
-    let [currentVariationEntity, setCurrentVariationEntity] = useState(reducedVariationEntityList[0][0]);
-    let isShown = arrayOfSelectedOptionFromParent.includes(currentVariationEntity);
-    useEffect(() => {
-        isShown = arrayOfSelectedOptionFromParent.includes(currentVariationEntity);
-        if (isShown == false) {
-            //reset selected options to prevent wrong displaying option
-            isShown = arrayOfSelectedOptionFromParent.includes(reducedVariationEntityList[0][0]);
-            setCurrentVariationEntity(reducedVariationEntityList[0][0]);
-        }
-    }, [arrayOfSelectedOptionFromParent, currentVariationEntity]);
-
-    console.log(reducedVariationEntityList);
-
-    return (
-        // this key is wrong
-        <div>
-            {isShown ? reducedVariationEntityList.map(arrayOfVariations => {
-                <div className="mb-2">
-                    <p className='fs-6 fw-bold mb-1'>{arrayOfVariations[0].name}</p>
-                    <Form.Select size="sm" className='bg-secondary bg-opacity-10' onChange={(event) => {
-                        const newSelectedVariation = arrayOfVariations.find((variationEntity) => variationEntity.id == event.target.value);
-                        const oldSelectedVariation = currentVariationEntity;
-
-                        setArrayOfSelectedOptionFromParent(removeDependentVariationEntity(addDependentVariationEntity(arrayOfSelectedOptionFromParent, newSelectedVariation), oldSelectedVariation));
-                        setCurrentVariationEntity(newSelectedVariation);
-                    }}>
-                        <option key={arrayOfVariations[0].id} value={arrayOfVariations[0].id}>{arrayOfVariations[0].value}</option>
-                        {arrayOfVariations.map((variationEntity => {
-                            if (variationEntity !== arrayOfVariations[0]) {
-                                return <option key={variationEntity.id} value={variationEntity.id}>{variationEntity.value}</option>
-                            }
-                        }))}
-                    </Form.Select>
-                </div>
-            }) : null}
-            {variationEntityList.map((variationEntity => {
-                return ProductOptionChildren(variationEntity.childVariationEntityIndexDtoList, arrayOfSelectedOptionFromParent, setArrayOfSelectedOptionFromParent);
-            }))}
-        </div>
-    )
-}
-
-function addDependentVariationEntity(arrayOfSelectedOption, currentVariationEntity) {
-    let addingVariations = [...arrayOfSelectedOption];
-    if (currentVariationEntity == null || currentVariationEntity.childVariationEntityIndexDtoList == null || currentVariationEntity.childVariationEntityIndexDtoList.lenth <= 0) return addingVariations;
-    addingVariations.push(currentVariationEntity);
-
-    addingVariations.push(...addDependentVariationEntity([], currentVariationEntity.childVariationEntityIndexDtoList[0]));
-    return addingVariations;
-}
-
-function removeDependentVariationEntity(arrayOfSelectedOption, currentVariationEntity) {
-    let filteredOutVariations = getAllVariationsFromNestedVariation(currentVariationEntity);
-    return arrayOfSelectedOption.filter((element) => !filteredOutVariations.includes(element));
-}
-
-function getAllVariationsFromNestedVariation(currentVariationEntity) {
-    let filteredOutId = [currentVariationEntity];
-    if (currentVariationEntity == null || currentVariationEntity.childVariationEntityIndexDtoList == null || currentVariationEntity.childVariationEntityIndexDtoList.lenth <= 0) return filteredOutId;
-
-    filteredOutId.push(...currentVariationEntity.childVariationEntityIndexDtoList.flatMap((variationEntity) => {
-        return getAllVariationsFromNestedVariation(variationEntity);
-    }));
-    return filteredOutId;
-}
-
-function ProductOption(props) {
-    let [product, setProduct] = useState(props.product);
-    let [arrayOfSelectedOption, setArrayOfSelectedOption] = useState(addDependentVariationEntity([], product.variationEntityIndexDtoSet[0]));
+export default function ProductOption(props) {
+    let variationEntityList = props.product.variationEntity;
+    let [arrayOfSelectedVariationEntity, setArrayOfSelectedVariationEntity] = useState([null]);
 
     return (
         <div className='small my-3'>
-            {console.log(arrayOfSelectedOption)}
-            {ProductOptionChildren(product.variationEntityIndexDtoSet, arrayOfSelectedOption, setArrayOfSelectedOption)}
+            {renderProductOption({ lastSelectedVariationEntityId: null })}
         </div>
     )
-}
 
-export default ProductOption
+    function renderProductOption({ ...props }) {
+        console.log("arrayOfSelectedOption: ", arrayOfSelectedVariationEntity);
+        let currentVariationEntityList = variationEntityList.filter((variationEntity) => variationEntity.parentVariationEntityId == props.lastSelectedVariationEntityId);
+        
+        console.log("currentVariationEntityList: ", currentVariationEntityList);
+        if (currentVariationEntityList == null || currentVariationEntityList.length == 0) return;
+        let selectedVariationEntityFromArray = currentVariationEntityList.find((element) => arrayOfSelectedVariationEntity.includes(element.id));
+        let currentSelectedVaritionEntity = selectedVariationEntityFromArray != null ? selectedVariationEntityFromArray : currentVariationEntityList[0];
+
+        console.log("currentSelectedVaritionEntity: ", currentSelectedVaritionEntity);
+        arrayOfSelectedVariationEntity.push(currentSelectedVaritionEntity.id);
+
+        return (
+            <div>
+                <div className="mb-2">
+                    <p className='fs-6 fw-bold mb-1'>{currentSelectedVaritionEntity.name}</p>
+                    <Form.Select size="sm" className='bg-secondary bg-opacity-10' onChange={(event) => {
+                        updateArrayOfSelectedVariationEntity(currentSelectedVaritionEntity, parseInt(event.target.value));
+                        currentSelectedVaritionEntity = currentVariationEntityList.find((e) => e.id == event.target.value);
+                        console.log(event.target.value);
+                    }}>
+                        {currentVariationEntityList.map((variationEntity => {
+                            return <option key={variationEntity.id} value={variationEntity.id}>{variationEntity.value}</option>
+                        }))}
+                    </Form.Select>
+                </div>
+                {renderProductOption({ lastSelectedVariationEntityId: currentSelectedVaritionEntity.id })}
+            </div>
+        )
+    }
+
+    // dependent variation entity means the childrend or grandchildrend of the current variation entity and so on...
+    function getAllDependentVariationEntityIds(currentVariationEntity) {
+        let filteredOutId = [currentVariationEntity.id];
+        if (currentVariationEntity.childrenVariationEntityIdList.length == 0) return filteredOutId;
+
+        filteredOutId.push(...currentVariationEntity.childrenVariationEntityIdList.flatMap((variationEntityId) => {
+            return getAllDependentVariationEntityIds(variationEntityList.find((e) => e.id == variationEntityId));
+        }));
+
+        return filteredOutId;
+    }
+
+    // add new selected variation entity to the array and remove all the dependent variation entity from the array
+    function updateArrayOfSelectedVariationEntity(oldSelectedVaritionEntity, newSelectedVariationEntityId) {
+        let filteredOutId = getAllDependentVariationEntityIds(oldSelectedVaritionEntity);
+        let updatedArrayOfSelectedVariationEntity = [...arrayOfSelectedVariationEntity.filter((element) => !(filteredOutId.includes(element))), newSelectedVariationEntityId];
+        console.log("updatedArrayOfSelectedVariationEntity: ", updatedArrayOfSelectedVariationEntity);
+        setArrayOfSelectedVariationEntity(updatedArrayOfSelectedVariationEntity);
+    }
+}
