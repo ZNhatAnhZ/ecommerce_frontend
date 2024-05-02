@@ -1,9 +1,13 @@
 import React, { useState } from 'react'
 import Form from 'react-bootstrap/Form';
 
+// this function uses a set to keep track of the selected variation entities
+// it will rerender the whole tree if the selected variation entities is changed
+// by default, left most variation entity of each level will be selected 
 export default function ProductOption(props) {
     let variationEntityList = props.product.variationEntity;
-    let [arrayOfSelectedVariationEntity, setArrayOfSelectedVariationEntity] = useState([null]);
+    // add null to the set to allow root variation entity to be rendered
+    let [setOfSelectedVariationEntity, setSetOfSelectedVariationEntity] = useState(new Set([null]));
 
     return (
         <div className='small my-3'>
@@ -11,28 +15,31 @@ export default function ProductOption(props) {
         </div>
     )
 
+    // recursive function to render the variation entity tree
     function renderProductOption({ ...props }) {
-        console.log("arrayOfSelectedOption: ", arrayOfSelectedVariationEntity);
-        let currentVariationEntityList = variationEntityList.filter((variationEntity) => variationEntity.parentVariationEntityId == props.lastSelectedVariationEntityId);
-        
-        console.log("currentVariationEntityList: ", currentVariationEntityList);
-        if (currentVariationEntityList == null || currentVariationEntityList.length == 0) return;
-        let selectedVariationEntityFromArray = currentVariationEntityList.find((element) => arrayOfSelectedVariationEntity.includes(element.id));
-        let currentSelectedVaritionEntity = selectedVariationEntityFromArray != null ? selectedVariationEntityFromArray : currentVariationEntityList[0];
+        console.log("arrayOfSelectedOption: ", setOfSelectedVariationEntity);
 
+        //children variation entities of the selected variation entity in the upper level
+        let validVariationEntitiesForCurrentLevel = variationEntityList.filter((variationEntity) => variationEntity.parentVariationEntityId == props.lastSelectedVariationEntityId);
+        console.log("validVariationEntitiesForCurrentLevel: ", validVariationEntitiesForCurrentLevel);
+        // if reached the end of the variation entity tree, done rendering
+        if (validVariationEntitiesForCurrentLevel == null || validVariationEntitiesForCurrentLevel.length == 0) return;
+        
+        // if the selected variation is not set before, choose the first one from the current level valid list
+        let selectedVariationEntityFromSet = validVariationEntitiesForCurrentLevel.find((element) => setOfSelectedVariationEntity.has(element.id));
+        let currentSelectedVaritionEntity = selectedVariationEntityFromSet != null ? selectedVariationEntityFromSet : validVariationEntitiesForCurrentLevel[0];
+        setOfSelectedVariationEntity.add(currentSelectedVaritionEntity.id);
         console.log("currentSelectedVaritionEntity: ", currentSelectedVaritionEntity);
-        arrayOfSelectedVariationEntity.push(currentSelectedVaritionEntity.id);
 
         return (
             <div>
                 <div className="mb-2">
                     <p className='fs-6 fw-bold mb-1'>{currentSelectedVaritionEntity.name}</p>
                     <Form.Select size="sm" className='bg-secondary bg-opacity-10' onChange={(event) => {
-                        updateArrayOfSelectedVariationEntity(currentSelectedVaritionEntity, parseInt(event.target.value));
-                        currentSelectedVaritionEntity = currentVariationEntityList.find((e) => e.id == event.target.value);
-                        console.log(event.target.value);
+                        updateSetOfSelectedVariationEntity(currentSelectedVaritionEntity, parseInt(event.target.value));
+                        currentSelectedVaritionEntity = validVariationEntitiesForCurrentLevel.find((e) => e.id == event.target.value);
                     }}>
-                        {currentVariationEntityList.map((variationEntity => {
+                        {validVariationEntitiesForCurrentLevel.map((variationEntity => {
                             return <option key={variationEntity.id} value={variationEntity.id}>{variationEntity.value}</option>
                         }))}
                     </Form.Select>
@@ -54,11 +61,11 @@ export default function ProductOption(props) {
         return filteredOutId;
     }
 
-    // add new selected variation entity to the array and remove all the dependent variation entity from the array
-    function updateArrayOfSelectedVariationEntity(oldSelectedVaritionEntity, newSelectedVariationEntityId) {
+    // remove all the dependent variation entity from the array and add new selected variation entity to the array
+    function updateSetOfSelectedVariationEntity(oldSelectedVaritionEntity, newSelectedVariationEntityId) {
         let filteredOutId = getAllDependentVariationEntityIds(oldSelectedVaritionEntity);
-        let updatedArrayOfSelectedVariationEntity = [...arrayOfSelectedVariationEntity.filter((element) => !(filteredOutId.includes(element))), newSelectedVariationEntityId];
+        let updatedArrayOfSelectedVariationEntity = new Set([...[...setOfSelectedVariationEntity].filter((element) => !(filteredOutId.includes(element))), newSelectedVariationEntityId]);
         console.log("updatedArrayOfSelectedVariationEntity: ", updatedArrayOfSelectedVariationEntity);
-        setArrayOfSelectedVariationEntity(updatedArrayOfSelectedVariationEntity);
+        setSetOfSelectedVariationEntity(updatedArrayOfSelectedVariationEntity);
     }
 }
