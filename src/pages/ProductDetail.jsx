@@ -29,7 +29,7 @@ function ProductDetail() {
                             <ProductOption product={product}></ProductOption>
                         </Row>
                         <Row>
-                            <PurchasingArea></PurchasingArea>
+                            <PurchasingArea {...product}></PurchasingArea>
                         </Row>
                     </Col>
                 </Row>

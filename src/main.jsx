@@ -16,6 +16,8 @@ import CartIndex from './pages/CartIndex.jsx';
 import Checkout from './pages/Checkout.jsx';
 import axios from 'axios';
 import { getAllProducts, getAProduct } from './services/productService.jsx';
+import { store } from './redux/index.jsx'
+import { Provider } from 'react-redux'
 
 axios.defaults.baseURL = "http://localhost:8080";
 
@@ -47,7 +49,7 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  // <React.StrictMode>
-  <RouterProvider router={router} />
-  // </React.StrictMode>,
+  <Provider store={store}>
+    <RouterProvider router={router} />
+  </Provider>
 )
