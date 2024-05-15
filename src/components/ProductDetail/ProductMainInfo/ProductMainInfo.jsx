@@ -1,12 +1,12 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import Col from 'react-bootstrap/esm/Col'
 import Container from 'react-bootstrap/esm/Container'
 import Row from 'react-bootstrap/esm/Row'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTruck, faBox } from '@fortawesome/free-solid-svg-icons'
 
-function ProductMainInfo(props) {
-    let [product, setProduct] = useState(props.product);
+export default function ProductMainInfo(props) {
+    let [product, setProduct] = useState(props);
 
     return (
         <div>
@@ -62,5 +62,3 @@ function ProductMainInfo(props) {
         </div>
     )
 }
-
-export default ProductMainInfo

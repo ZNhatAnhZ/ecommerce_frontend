@@ -1,4 +1,3 @@
-import React from 'react'
 import Header from '../components/Header/Header'
 import Footer from '../components/Footer/Footer'
 import ProductImageContainer from '../components/ProductDetail/ImageArea/ProductImageContainer'
@@ -23,10 +22,10 @@ function ProductDetail() {
                     </Col>
                     <Col className='col-5 p-0'>
                         <Row>
-                            <ProductMainInfo product={product}></ProductMainInfo>
+                            <ProductMainInfo {...product}></ProductMainInfo>
                         </Row>
                         <Row>
-                            <ProductOption product={product}></ProductOption>
+                            <ProductOption {...product}></ProductOption>
                         </Row>
                         <Row>
                             <PurchasingArea {...product}></PurchasingArea>

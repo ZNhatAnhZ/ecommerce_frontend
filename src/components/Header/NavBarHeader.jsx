@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux'
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -19,7 +19,6 @@ const NavBarHeader = () => {
         let initCart = async () => {
             if (user != null) {
                 let cart = await getCart(user.id);
-                console.log(cart.data);
                 dispatch(CartSlice.actions.setCart(cart.data));
             }
         }
