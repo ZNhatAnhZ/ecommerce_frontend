@@ -1,4 +1,3 @@
-import React from 'react'
 import Container from 'react-bootstrap/esm/Container'
 import ProductDisplayArea from '../components/CartIndex/ProductDisplayArea'
 import OrderSumaryArea from '../components/CartIndex/OrderSumaryArea'

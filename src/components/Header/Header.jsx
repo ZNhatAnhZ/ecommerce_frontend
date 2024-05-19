@@ -1,5 +1,3 @@
-import React from 'react'
-
 import SearchBar from './SearchBar';
 import NavBarHeader from './NavBarHeader';
 import NavBarCategory from './NavBarCategory';

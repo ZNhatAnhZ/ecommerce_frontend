@@ -1,4 +1,3 @@
-import React from 'react'
 import Row from 'react-bootstrap/esm/Row'
 import Col from 'react-bootstrap/esm/Col'
 import Container from 'react-bootstrap/esm/Container'
@@ -13,7 +12,7 @@ const Image = () => {
     />
 }
 
-function Checkout() {
+export default function Checkout() {
     return (
         <div>
             <div className='py-3 d-flex justify-content-center shadow'>
@@ -36,5 +35,3 @@ function Checkout() {
 
     )
 }
-
-export default Checkout

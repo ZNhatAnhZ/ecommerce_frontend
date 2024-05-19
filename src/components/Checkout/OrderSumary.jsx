@@ -1,4 +1,3 @@
-import React from 'react'
 import Col from 'react-bootstrap/esm/Col'
 import Row from 'react-bootstrap/esm/Row'
 import Container from 'react-bootstrap/esm/Container'
@@ -76,7 +75,7 @@ function OrderSumary() {
           </Row>
         </Row>
       </Container>
-      <hr class="border-secondary my-3 mt-4" style={{ borderTop: "dashed 1px" }} />
+      <hr className="border-secondary my-3 mt-4" style={{ borderTop: "dashed 1px" }} />
       <Container className='justify-content-between'>
         <Row>
           <Col className='col-6 p-0'>
@@ -97,7 +96,7 @@ function OrderSumary() {
           </Col>
         </Row>
       </Container>
-      <hr class="border-secondary my-3" style={{ borderTop: "dashed 1px" }} />
+      <hr className="border-secondary my-3" style={{ borderTop: "dashed 1px" }} />
       <Container className='justify-content-between'>
         <Row>
           <Col className='col-6 p-0'>

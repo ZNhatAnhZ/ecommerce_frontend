@@ -1,4 +1,3 @@
-import React from 'react'
 import SocialMediaRow from './SocialMediaRow'
 import FooterInfo from './FooterInfo'
 import FooterCopyright from './FooterCopyright'
