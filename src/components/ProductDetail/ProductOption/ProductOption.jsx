@@ -1,13 +1,16 @@
 import { useState } from 'react'
 import Form from 'react-bootstrap/Form';
+import {useDispatch} from "react-redux";
+import {ProductOptionSlice} from "../../../redux/ProductOptionSlice.jsx";
 
 // this function uses a set to keep track of the selected variation entities
 // it will rerender the whole tree if the selected variation entities is changed
 // by default, left most variation entity of each level will be selected 
 export default function ProductOption(props) {
-    let variationEntityList = props.variationEntity;
+    const dispatch = useDispatch();
+    const variationEntityList = props.variationEntity;
     // add null to the set to allow root variation entity to be rendered
-    let [setOfSelectedVariationEntity, setSetOfSelectedVariationEntity] = useState(new Set([null]));
+    const [setOfSelectedVariationEntity, setSetOfSelectedVariationEntity] = useState(new Set([null]));
 
     return (
         <div className='small my-3'>
@@ -23,7 +26,10 @@ export default function ProductOption(props) {
         let validVariationEntitiesForCurrentLevel = variationEntityList.filter((variationEntity) => variationEntity.parentVariationEntityId === props.lastSelectedVariationEntityId);
         console.log("validVariationEntitiesForCurrentLevel: ", validVariationEntitiesForCurrentLevel);
         // if reached the end of the variation entity tree, done rendering
-        if (validVariationEntitiesForCurrentLevel == null || validVariationEntitiesForCurrentLevel.length === 0) return;
+        if (validVariationEntitiesForCurrentLevel == null || validVariationEntitiesForCurrentLevel.length === 0) {
+            dispatch(ProductOptionSlice.actions.setSetOfSelectedVariationEntity(new Set(setOfSelectedVariationEntity)));
+            return;
+        }
         
         // if the selected variation is not set before, choose the first one from the current level valid list
         let selectedVariationEntityFromSet = validVariationEntitiesForCurrentLevel.find((element) => setOfSelectedVariationEntity.has(element.id));
@@ -66,6 +72,7 @@ export default function ProductOption(props) {
         let filteredOutId = getAllDependentVariationEntityIds(oldSelectedVariationEntity);
         let updatedArrayOfSelectedVariationEntity = new Set([...[...setOfSelectedVariationEntity].filter((element) => !(filteredOutId.includes(element))), newSelectedVariationEntityId]);
         console.log("updatedArrayOfSelectedVariationEntity: ", updatedArrayOfSelectedVariationEntity);
+        dispatch(ProductOptionSlice.actions.setSetOfSelectedVariationEntity(new Set(updatedArrayOfSelectedVariationEntity)));
         setSetOfSelectedVariationEntity(updatedArrayOfSelectedVariationEntity);
     }
 }
