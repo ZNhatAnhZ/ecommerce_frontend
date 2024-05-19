@@ -1,4 +1,4 @@
-import React from 'react'
+import {useRef} from 'react'
 import TextField from '@mui/material/TextField';
 import Container from 'react-bootstrap/esm/Container';
 import Row from 'react-bootstrap/esm/Row';
@@ -11,13 +11,21 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import {useDispatch, useSelector} from "react-redux";
+import {captureOrder, createAnOrderForTheCartWithEmail} from "../../services/OrderService.jsx";
 
-function CheckoutInfo() {
+export default function CheckoutInfo() {
+    const dispatch = useDispatch();
+    const user = useSelector(state => state.authentication.user);
+    const cart = useSelector(state => state.cart.cart);
+    const emailRef = useRef();
+    let order = {};
+
     return (
         <div>
             <h4 className='mb-3 fw-bold'>Check Out</h4>
             <div className='fw-bold'>Contact Info</div>
-            <TextField size="small" fullWidth label="Email Address" variant="outlined" margin="dense" />
+            <TextField size="small" fullWidth label="Email Address" variant="outlined" margin="dense" inputRef={emailRef} />
             <TextField size="small" fullWidth label="Phone Number" variant="outlined" margin="dense" />
             <div className='fw-bold mt-3'>Shipping Address</div>
             <TextField size="small" fullWidth label="Full Name" variant="outlined" margin="dense" />
@@ -72,12 +80,21 @@ function CheckoutInfo() {
                 This site is protected by reCAPTCHA and the Google Privacy Policy & Terms of Service apply.
             </div>
             <PayPalScriptProvider options={{ clientId: "test", components: "buttons", currency: "USD" }} >
-                <PayPalButtons createOrder={() => { return "0CR82973X9314573E" }} onApprove={() => { console.log("purchasing successful") }} style={{ layout: "vertical", label: "pay", }} />
+                <PayPalButtons createOrder={createOrderAndGetOrderIdPaypal} onApprove={captureOrderAfterPaypalApprove} style={{ layout: "vertical", label: "pay", }} />
             </PayPalScriptProvider>
 
         </div>
 
     )
-}
 
-export default CheckoutInfo
+    async function createOrderAndGetOrderIdPaypal() {
+        let paypalOrder = await createAnOrderForTheCartWithEmail(cart, emailRef.current.value);
+        order = paypalOrder.data;
+        return paypalOrder.data.paypalOrderId;
+    }
+
+    async function captureOrderAfterPaypalApprove(data) {
+        let capturedOrder = await captureOrder(data, order, user);
+        console.log(capturedOrder.data);
+    }
+}

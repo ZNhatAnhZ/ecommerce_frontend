@@ -1,4 +1,3 @@
-import React from 'react'
 import Col from 'react-bootstrap/esm/Col'
 import Container from 'react-bootstrap/esm/Container'
 import Row from 'react-bootstrap/esm/Row'
@@ -6,8 +5,10 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import { PayPalScriptProvider, PayPalMessages } from "@paypal/react-paypal-js";
+import {useNavigate} from "react-router-dom";
 
 function OrderSumaryArea() {
+  const navigate = useNavigate();
   return (
     <div>
       <h4 className='mb-3 fw-bold'>Order Summary</h4>
@@ -39,7 +40,9 @@ function OrderSumaryArea() {
             <small className='text-center'>Shipping and tax will be calculated at checkout.</small>
           </Row>
           <Row className='m-0 pt-3'>
-            <Button variant="danger" size="lg">
+            <Button variant="danger" size="lg" onClick={() => {
+              navigate('/checkout');
+            }}>
               <p className='fw-bold m-0 py-1'>Secure Checkout</p>
             </Button>
           </Row>

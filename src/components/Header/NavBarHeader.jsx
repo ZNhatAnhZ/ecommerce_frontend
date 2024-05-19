@@ -17,7 +17,7 @@ const NavBarHeader = () => {
 
     useEffect(() => {
         let initCart = async () => {
-            if (user != null) {
+            if (user != null && cart == null) {
                 let cart = await getCart(user.id);
                 dispatch(CartSlice.actions.setCart(cart.data));
             }
