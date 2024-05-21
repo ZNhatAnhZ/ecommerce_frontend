@@ -10,7 +10,9 @@ export default function ProductOption(props) {
     const dispatch = useDispatch();
     const variationEntityList = props.variationEntity;
     // add null to the set to allow root variation entity to be rendered
-    const [setOfSelectedVariationEntity, setSetOfSelectedVariationEntity] = useState(new Set([null]));
+    // const a = initializeSetOfSelectedVariationEntity({ lastSelectedVariationEntityId: null });
+    // console.log("a", a);
+    const [setOfSelectedVariationEntity, setSetOfSelectedVariationEntity] = useState(new Set(generateSetOfSelectedVariationEntity({ lastSelectedVariationEntityId: null })));
 
     return (
         <div className='small my-3'>
@@ -32,9 +34,7 @@ export default function ProductOption(props) {
         }
         
         // if the selected variation is not set before, choose the first one from the current level valid list
-        let selectedVariationEntityFromSet = validVariationEntitiesForCurrentLevel.find((element) => setOfSelectedVariationEntity.has(element.id));
-        let currentSelectedVariationEntity = selectedVariationEntityFromSet != null ? selectedVariationEntityFromSet : validVariationEntitiesForCurrentLevel[0];
-        setOfSelectedVariationEntity.add(currentSelectedVariationEntity.id);
+        let currentSelectedVariationEntity = validVariationEntitiesForCurrentLevel.find((element) => setOfSelectedVariationEntity.has(element.id));
         console.log("currentSelectedVariationEntity: ", currentSelectedVariationEntity);
 
         return (
@@ -70,9 +70,24 @@ export default function ProductOption(props) {
     // remove all the dependent variation entity from the array and add new selected variation entity to the array
     function updateSetOfSelectedVariationEntity(oldSelectedVariationEntity, newSelectedVariationEntityId) {
         let filteredOutId = getAllDependentVariationEntityIds(oldSelectedVariationEntity);
-        let updatedArrayOfSelectedVariationEntity = new Set([...[...setOfSelectedVariationEntity].filter((element) => !(filteredOutId.includes(element))), newSelectedVariationEntityId]);
+        let updatedArrayOfSelectedVariationEntity = [...[...setOfSelectedVariationEntity].filter((element) => !(filteredOutId.includes(element))), newSelectedVariationEntityId];
+        updatedArrayOfSelectedVariationEntity.push(...generateSetOfSelectedVariationEntity({ lastSelectedVariationEntityId: newSelectedVariationEntityId }));
         console.log("updatedArrayOfSelectedVariationEntity: ", updatedArrayOfSelectedVariationEntity);
         dispatch(ProductOptionSlice.actions.setSetOfSelectedVariationEntity(new Set(updatedArrayOfSelectedVariationEntity)));
-        setSetOfSelectedVariationEntity(updatedArrayOfSelectedVariationEntity);
+        setSetOfSelectedVariationEntity(new Set(updatedArrayOfSelectedVariationEntity));
+    }
+
+    // choose the first one from the current level valid list (choose the left most variation entity of each level by default)
+    function generateSetOfSelectedVariationEntity({...props}) {
+        let validVariationEntitiesForCurrentLevel = variationEntityList.filter((variationEntity) => variationEntity.parentVariationEntityId === props.lastSelectedVariationEntityId);
+        console.log("validVariationEntitiesForCurrentLevel(initialization): ", validVariationEntitiesForCurrentLevel);
+
+        // if reached the end of the variation entity tree, done rendering
+        if (validVariationEntitiesForCurrentLevel == null || validVariationEntitiesForCurrentLevel.length === 0) {
+            return [];
+        }
+
+        console.log("first validVariationEntitiesForCurrentLevel: ", validVariationEntitiesForCurrentLevel[0]);
+        return [validVariationEntitiesForCurrentLevel[0].id, ...generateSetOfSelectedVariationEntity({lastSelectedVariationEntityId: validVariationEntitiesForCurrentLevel[0].id})];
     }
 }
