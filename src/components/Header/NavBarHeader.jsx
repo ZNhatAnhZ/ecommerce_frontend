@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux'
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -11,21 +11,24 @@ import { getCart } from '../../services/CartService'
 import { CartSlice } from "../../redux/CartSlice";
 import {useNavigate} from "react-router-dom";
 
-const NavBarHeader = () => {
+export default function NavBarHeader() {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const cart = useSelector(state => state.cart.cart);
     const user = useSelector(state => state.authentication.user);
-    const navigate = useNavigate();
 
     useEffect(() => {
         let initCart = async () => {
-            if (user != null && cart == null) {
+            if (user != null) {
                 let cart = await getCart(user.id);
                 dispatch(CartSlice.actions.setCart(cart.data));
+            } else {
+                let cart = JSON.parse(localStorage.getItem("cart"));
+                dispatch(CartSlice.actions.setCart(cart != null ? cart.data : null));
             }
         }
-        initCart();
-    }, [])
+        initCart().then()
+    }, [dispatch, user])
 
     return (
         <Navbar bg="light" data-bs-theme="light">
@@ -49,5 +52,3 @@ const NavBarHeader = () => {
         </Navbar>
     )
 }
-
-export default NavBarHeader

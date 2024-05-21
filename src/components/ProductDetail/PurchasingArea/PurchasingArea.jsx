@@ -63,7 +63,7 @@ export default function PurchasingArea(props) {
                 let noNullValueProductOption = [...productOptions].filter(item => item != null);
                 let isInserted = false;
                 cart.data.content.forEach(item => {
-                    if (isInserted === false && item.productId === props.id && compareTwoArray(item.variationEntityIdSet, noNullValueProductOption)) {
+                    if (isInserted === false && item.productId === props.id && !isTwoArrayDifferent(item.variationEntityIdSet, noNullValueProductOption)) {
                         item.quantity += 1;
                         isInserted = true;
                     }
@@ -85,16 +85,13 @@ export default function PurchasingArea(props) {
         dispatch(CartSlice.actions.setCart(newCart.data));
     }
 
-    function compareTwoArray(arr1, arr2) {
+    function isTwoArrayDifferent(arr1, arr2) {
         if (arr1.length !== arr2.length) {
-            return false;
+            return true;
         }
-        arr1.forEach(item => {
-            if (!arr2.includes(item)) {
-                return false;
-            }
+        return arr1.some(item => {
+            return !arr2.includes(item);
         })
-        return true;
     }
 }
 
