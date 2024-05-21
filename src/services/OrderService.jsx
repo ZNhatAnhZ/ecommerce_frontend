@@ -23,8 +23,10 @@ export async function createAnOrderForTheCartWithEmail(cart, email) {
             return {
                 cartItemId: item.id,
                 quantity: item.quantity,
-                itemEntityId: item.itemEntity.id,
-                itemEntitySku: item.sku
+                itemEntityId: item.itemEntity?.id,
+                itemEntitySku: item.sku,
+                productId: item.productId,
+                variationEntityIdSet: item.variationEntityIdSet
             }
         })
     });
@@ -33,7 +35,7 @@ export async function createAnOrderForTheCartWithEmail(cart, email) {
 export async function captureOrder(data, orderDetail, user) {
     return await axios.post("/api/orders/" + orderDetail.id + "/confirm", {
         email: orderDetail.email,
-        userId: user.id,
+        userId: user?.id,
         paypalOrderId: data.orderID,
         paymentId: data.paymentID,
         payerId: data.payerID,

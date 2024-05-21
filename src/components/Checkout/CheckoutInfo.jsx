@@ -13,9 +13,12 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import {useDispatch, useSelector} from "react-redux";
 import {captureOrder, createAnOrderForTheCartWithEmail} from "../../services/OrderService.jsx";
+import {CartSlice} from "../../redux/CartSlice.jsx";
+import {useNavigate} from "react-router-dom";
 
 export default function CheckoutInfo() {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const user = useSelector(state => state.authentication.user);
     const cart = useSelector(state => state.cart.cart);
     const emailRef = useRef();
@@ -96,5 +99,12 @@ export default function CheckoutInfo() {
     async function captureOrderAfterPaypalApprove(data) {
         let capturedOrder = await captureOrder(data, order, user);
         console.log(capturedOrder.data);
+        cleanUpCart();
+    }
+
+    function cleanUpCart() {
+        dispatch(CartSlice.actions.setCart(null));
+        localStorage.removeItem("cart");
+        navigate("/carts");
     }
 }
