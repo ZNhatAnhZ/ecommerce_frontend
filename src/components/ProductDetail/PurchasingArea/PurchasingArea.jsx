@@ -43,8 +43,58 @@ export default function PurchasingArea(props) {
     async function triggerAddingCart() {
         console.log("productDetails", props);
         console.log("productOptions", productOptions);
-        let newCart = await addItemToCart(user.id, props, productOptions, 1);
+        let newCart;
+        if (user != null) {
+            newCart = await addItemToCart(user.id, props, productOptions, 1);
+        } else {
+            let cart = JSON.parse(localStorage.getItem("cart"));
+            if (cart == null) {
+                newCart = {
+                    data: {
+                        content: [{
+                            quantity: 1,
+                            variationEntityIdSet: [...productOptions].filter(item => item != null),
+                            productId: props.id
+                        }],
+                        totalElements: 1
+                    }
+                };
+            } else {
+                let noNullValueProductOption = [...productOptions].filter(item => item != null);
+                let isInserted = false;
+                cart.data.content.forEach(item => {
+                    if (isInserted === false && item.productId === props.id && compareTwoArray(item.variationEntityIdSet, noNullValueProductOption)) {
+                        item.quantity += 1;
+                        isInserted = true;
+                    }
+                })
+                if (isInserted === false) {
+                    cart.data.content.push({
+                        quantity: 1,
+                        variationEntityIdSet: noNullValueProductOption,
+                        productId: props.id
+                    })
+                    cart.data.totalElements += 1;
+                    isInserted = true;
+                }
+                newCart = cart;
+            }
+            localStorage.setItem("cart", JSON.stringify(newCart));
+        }
+        console.log("cart: ", newCart);
         dispatch(CartSlice.actions.setCart(newCart.data));
+    }
+
+    function compareTwoArray(arr1, arr2) {
+        if (arr1.length !== arr2.length) {
+            return false;
+        }
+        arr1.forEach(item => {
+            if (!arr2.includes(item)) {
+                return false;
+            }
+        })
+        return true;
     }
 }
 
