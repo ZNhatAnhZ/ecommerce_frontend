@@ -9,11 +9,13 @@ import { faCartShopping } from '@fortawesome/free-solid-svg-icons'
 import Badge from 'react-bootstrap/Badge';
 import { getCart } from '../../services/CartService'
 import { CartSlice } from "../../redux/CartSlice";
+import {useNavigate} from "react-router-dom";
 
 const NavBarHeader = () => {
     const dispatch = useDispatch();
     const cart = useSelector(state => state.cart.cart);
     const user = useSelector(state => state.authentication.user);
+    const navigate = useNavigate();
 
     useEffect(() => {
         let initCart = async () => {
@@ -38,7 +40,7 @@ const NavBarHeader = () => {
                     <Nav.Link href="#home">Home</Nav.Link>
                     <Nav.Link href="#features">Features</Nav.Link>
                     <Nav.Link href="#pricing">Pricing</Nav.Link>
-                    <Button variant="outline-dark" className='border-0'>
+                    <Button variant="outline-dark" className='border-0' onClick={() => {navigate("/carts")}}>
                         <FontAwesomeIcon icon={faCartShopping} />
                         <Badge pill bg="danger" style={{ fontSize: 0.6 + "em", position: "relative", top: -0.7 + "em", right: 0.8 + "em" }}>{cart == null ? 0 : cart.totalElements}</Badge>
                     </Button>

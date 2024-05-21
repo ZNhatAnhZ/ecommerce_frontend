@@ -1,14 +1,15 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import Dropdown from 'react-bootstrap/Dropdown';
 import Card from 'react-bootstrap/Card';
 import Pagination from '@mui/material/Pagination';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import { getAllProducts } from '../../services/productService';
 import { CardActionArea } from '@mui/material';
+import {useNavigate} from "react-router-dom";
 
-function ProductIndexContainer(props) {
+export default function ProductIndexContainer(props) {
+    const navigate = useNavigate();
     let [products, setProducts] = useState(props.products);
 
     return (
@@ -34,7 +35,7 @@ function ProductIndexContainer(props) {
                         products.content.map(product => {
                             return (
                                 <Card key={product.id} className='m-2 p-1' style={{ width: '18rem' }}>
-                                    <CardActionArea href={`/products/${product.id}`}>
+                                    <CardActionArea onClick={(event) => preventDefaultAndNavigate(event, `/products/${product.id}`)}>
                                         <Card.Img src="https://images.unsplash.com/photo-1579353977828-2a4eab540b9a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80" />
                                         <Card.Body>
                                             <Card.Title>{product.name}</Card.Title>
@@ -60,6 +61,9 @@ function ProductIndexContainer(props) {
             </Container>
         </div>
     )
-}
 
-export default ProductIndexContainer
+    function preventDefaultAndNavigate(event, path) {
+        event.preventDefault();
+        navigate(path);
+    }
+}
