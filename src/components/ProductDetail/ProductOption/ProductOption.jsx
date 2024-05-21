@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import {useState} from 'react'
 import Form from 'react-bootstrap/Form';
 import {useDispatch} from "react-redux";
 import {ProductOptionSlice} from "../../../redux/ProductOptionSlice.jsx";
@@ -9,9 +9,7 @@ import {ProductOptionSlice} from "../../../redux/ProductOptionSlice.jsx";
 export default function ProductOption(props) {
     const dispatch = useDispatch();
     const variationEntityList = props.variationEntity;
-    // add null to the set to allow root variation entity to be rendered
-    // const a = initializeSetOfSelectedVariationEntity({ lastSelectedVariationEntityId: null });
-    // console.log("a", a);
+    // generate the set of selected variation entity
     const [setOfSelectedVariationEntity, setSetOfSelectedVariationEntity] = useState(new Set(generateSetOfSelectedVariationEntity({ lastSelectedVariationEntityId: null })));
 
     return (
