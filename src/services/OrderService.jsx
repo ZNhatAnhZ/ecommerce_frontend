@@ -33,7 +33,7 @@ export async function createAnOrderForTheCartWithEmail(cart, email) {
 }
 
 export async function captureOrder(data, orderDetail, user) {
-    return await axios.post("/api/orders/" + orderDetail.id + "/confirm", {
+    return await axios.post("/api/orders/" + orderDetail.id + "/purchase", {
         email: orderDetail.email,
         userId: user?.id,
         paypalOrderId: data.orderID,
@@ -41,4 +41,21 @@ export async function captureOrder(data, orderDetail, user) {
         payerId: data.payerID,
         paymentSource: data.paymentSource,
     });
+}
+
+export async function getOrderByStatus(orderStatus, size, page) {
+    return await axios.get("/api/orders", {
+        params: {
+            status: orderStatus,
+            size: size,
+            page: page
+        }
+    });
+}
+
+export async function confirmOrder(data) {
+    return await axios.post("/api/orders/confirm", [{
+        orderId: data.orderId,
+        status: data.status,
+    }]);
 }
